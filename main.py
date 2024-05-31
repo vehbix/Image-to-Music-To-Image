@@ -19,7 +19,7 @@ def generateFolders():
     generate_file_path("images")
 
 img_name="plague.png" 
-pixelCount=40000
+pixelCount=400
 notaCount=2000
 
 if __name__ == "__main__":
