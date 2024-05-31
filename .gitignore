@@ -2,3 +2,4 @@
 output
 RGB
 image_dimensions.txt
+__pycache__

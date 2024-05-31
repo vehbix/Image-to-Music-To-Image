@@ -142,13 +142,10 @@ def main(image_path,save_path,pixelCount,notaCount):
     for thread in thread_list:
         thread.join()
 
-if __name__ == "__main__":
+def extraxt(img_name,pixelCount,notaCount):
     s=time.time()
-    img_name="plague.png" 
     img_folder_path="images"
     image_path = os.path.join(img_folder_path,img_name)# Lütfen kendi resminizi belirtin
     save_path="RGB"
-    pixelCount=930000
-    notaCount=2000
     main(image_path,save_path,pixelCount,notaCount)
     print("Tüm programın çalışması: ",round(time.time()-s,1)," saniye sürdü")

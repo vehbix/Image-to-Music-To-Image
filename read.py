@@ -152,7 +152,8 @@ def image_save(path,new_image):
         save_path=os.path.join(path,new_file_name)
         new_image.save(save_path)
 
-def main():
+def read():
+    multiprocessing.freeze_support()
     s=time.time()
     print(picture_size)
     filenames=files_names()
@@ -167,8 +168,5 @@ def main():
     print("Program running time:",round(e-s,1))
 
 
-if __name__ == '__main__':
-    multiprocessing.freeze_support()
-    main()
 
 
