@@ -6,16 +6,9 @@ import threading
 import multiprocessing
 import os
 
-def save_dimensions(height,width):
-    with open("image_dimensions.txt", "w") as dosya:
-        dosya.write(str(height)+"\n")
-        dosya.write(str(width))
-
-def extract_colors(image_path,pixelCount):
+def dimension(image_path,pixelCount):
     image = cv2.imread(image_path)
-    # Resmi RGB formatına dönüştür
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    w,h,_=image.shape
+    w, h, _ = image.shape
     for i in range(1,51):
         int(h/i)*int(w/i)
         if int(h/i)*int(w/i)<pixelCount:
@@ -25,11 +18,15 @@ def extract_colors(image_path,pixelCount):
         if i==50:
             h=int(h/50)
             w=int(w/50)
-            
+    return w,h,i,image
+
+def extract_colors(w,h,i,image):   
+    # Resmi RGB formatına dönüştür
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    
     print(f"resim boyutu {h}x{w}. Resim {i} kat küçültüldü. Pixel sayısı: {h*w:,}")
     ort_sure=3.87*1.67
     print(f'2000 nota count için ortalama dosya süresi {round(ort_sure,1)} saniye. {h*w} pixel için ortalama süre: {round(ort_sure*((h*w)/2000),1)} saniye')
-    save_dimensions(h,w)
     image = cv2.resize(image, (h, w))
     # Resmi düzleştir
     pixels = image.reshape(-1, 3)
@@ -43,8 +40,8 @@ def color_to_note(color):
     duration = 0.01
     return note.Note(pitchR, quarterLength=duration),note.Note(pitchG, quarterLength=duration),note.Note(pitchB, quarterLength=duration)
 
-def create_music_from_image(image_path,pixelCount,notaCount):
-    pixels = extract_colors(image_path,pixelCount)
+def create_music_from_image(w,h,i,image,notaCount):
+    pixels = extract_colors(w,h,i,image)
     
     music_stream_R_list = []
     music_stream_G_list = []
@@ -124,8 +121,8 @@ def write_music(music_stream, path, filename):
 
     print("Toplam süre:", round(time.time() - t, 1))
 
-def main(image_path,save_path,pixelCount,notaCount):
-    music_streams = create_music_from_image(image_path,pixelCount,notaCount)
+def main(w,h,i,image,save_path,notaCount):
+    music_streams = create_music_from_image(w,h,i,image,notaCount)
     thread_list = []
     for idx, stream_file in enumerate(music_streams):
         if idx == 0:
@@ -142,13 +139,12 @@ def main(image_path,save_path,pixelCount,notaCount):
     for thread in thread_list:
         thread.join()
 
-if __name__ == "__main__":
+def extract(img_name,pixelCount,notaCount):
     s=time.time()
-    img_name="plague.png" 
     img_folder_path="images"
     image_path = os.path.join(img_folder_path,img_name)# Lütfen kendi resminizi belirtin
     save_path="RGB"
-    pixelCount=930000
-    notaCount=2000
-    main(image_path,save_path,pixelCount,notaCount)
+    w,h,i,image=dimension(image_path,pixelCount)
+    main(w,h,i,image,save_path,notaCount)
     print("Tüm programın çalışması: ",round(time.time()-s,1)," saniye sürdü")
+    return w,h

@@ -5,11 +5,6 @@ from music21 import converter
 import time
 import multiprocessing
 
-# Open and read text file
-with open("image_dimensions.txt", "r") as file:
-    # Dosyadan verileri okuma
-    lines = file.readlines()
-    picture_size=(int(lines[0]),int(lines[1]))
 
 def files_names():
     def extract_number(filename):
@@ -124,7 +119,7 @@ def multi_list_merge(r_list,g_list,b_list):
     b_list=list_merge(b_list)
     return r_list,g_list,b_list
 
-def arraying_Color(r,g,b):
+def arraying_Color(r,g,b,picture_size):
     new=[]
     temp=[]
     for i in range(0,len(r)):
@@ -136,7 +131,7 @@ def arraying_Color(r,g,b):
     array = np.array(new, dtype=np.uint8)
     return array
 
-def image_save(path,new_image):
+def image_save(path,new_image,picture_size):
     os.makedirs(path, exist_ok=True)
     dimensions = f"{str(picture_size[0])}x{str(picture_size[1])}"
     liste=os.listdir(path)
@@ -152,23 +147,20 @@ def image_save(path,new_image):
         save_path=os.path.join(path,new_file_name)
         new_image.save(save_path)
 
-def main():
+def read(w,h):
+    multiprocessing.freeze_support()
     s=time.time()
-    print(picture_size)
+    picture_size=w,h
     filenames=files_names()
     piece_R_lis,piece_G_lis,piece_B_lis=files_to_parse(filenames)
     notes_R,notes_G,notes_B=notes(piece_R_lis,piece_G_lis,piece_B_lis)
     r_list,g_list,b_list=multi_solve(notes_R,notes_G,notes_B)
     r_listMulti,g_listMulti,b_listMulti=multi_list_merge(r_list,g_list,b_list)
-    array_RGB=arraying_Color(r_listMulti,g_listMulti,b_listMulti)
+    array_RGB=arraying_Color(r_listMulti,g_listMulti,b_listMulti,picture_size)
     new_image = Image.fromarray(array_RGB)
-    image_save("output",new_image)
+    image_save("output",new_image,picture_size)
     e=time.time()
     print("Program running time:",round(e-s,1))
 
-
-if __name__ == '__main__':
-    multiprocessing.freeze_support()
-    main()
 
 
