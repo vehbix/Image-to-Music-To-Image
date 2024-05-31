@@ -91,13 +91,6 @@ def remove_file_path(file_path):
     else:
         print(f"{file_path} can't find.")
 
-def generate_file_path(file_path):
-    if not os.path.exists(file_path):
-        os.makedirs(file_path)
-        print(f"{file_path} generate.")
-    else:
-        print(f"{file_path} already exist.")
-        remove_file_path(file_path)
 
 def write_midi(stream, path, filename, index):
     s=time.time()
@@ -107,7 +100,7 @@ def write_midi(stream, path, filename, index):
     # print(f"{filename}_{index}.mid dosyası yazıldı.")
 
 def write_music(music_stream, path, filename):
-    generate_file_path(path)
+    remove_file_path(path)
     t = time.time()
     processes = []
 
