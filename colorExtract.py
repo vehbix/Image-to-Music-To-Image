@@ -141,3 +141,9 @@ def extract(img_name,pixelCount,notaCount):
     main(w,h,i,image,save_path,notaCount)
     print("Tüm programın çalışması: ",round(time.time()-s,1)," saniye sürdü")
     return w,h
+
+if __name__ == "__main__":
+    img_name="plague.png" 
+    pixelCount=300000
+    notaCount=2000
+    extract(img_name,pixelCount,notaCount)
